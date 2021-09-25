@@ -1,26 +1,9 @@
 from selenium import webdriver
-from openpyxl import Workbook, load_workbook
-
-load = input('do you already have a apartements.xlsx file ?[yes/no]')
-
-if load.lower() == 'no':
-    wb = Workbook()
-    
-if load.lower() == 'yes':
-    wb = load_workbook('apartements.xlsx')
-
-else:
-    raise Exception('response not valid')
-
-try:
-    ws = wb['Bayut website']
-except:
-    ws = wb.create_sheet('Bayut website')
 
 
 PATH = 'C:/Program Files (x86)/chromedriver'
 option = webdriver.ChromeOptions()
-option.add_argument('headless')
+option.headless = True
 driver = webdriver.Chrome(PATH, options=option)
 
 driver.get('https://www.bayut.sa/en/western-region/apartments-for-rent-in-makkah/?residence_type=family')
@@ -47,11 +30,20 @@ for index, price in enumerate(prices):
         area = int(areas[index].text.split(' ')[0])
         link = links[index].get_attribute('href')
 
-        ws.append(['apartement number', 'Price', 'Location', 'Number of bedrooms', 'Number of bathrooms', 'Area', 'Links'])
-        ws.append([x, price, location, number_of_bedrooms, number_of_bathrooms, area, link])
-    
+        print(f'apartement {x}')
+        print(f'Rent: {price} {frequency}')
+        print(f'Location: {location}')
+        print(f'Number of bedrooms: {number_of_bedrooms}')
+        print(f'Numbe rof bathrooms: {number_of_bathrooms}')
+        print(f'Area: {area} Sq. M')
 
+        show = input('Would you like to see it on the website? [yes/no]')
+        
+        if show.lower() == 'yes':
+            second = webdriver.Chrome(PATH)
+            second.get(link)
+        else:
+            continue
 
-wb.save("apartements.xlsx")
 
 driver.close()
